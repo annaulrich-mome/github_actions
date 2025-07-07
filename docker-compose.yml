@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+
+ ### MySQL database with CDC enabled
+  mysql_test:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=MOME_db
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    command: >
+      --server-id=1
+      --log-bin=mysql-bin
+      --binlog-format=ROW
+      --binlog_row_image=FULL
+    ports:
+      - "3306:3307"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    profiles: ["mysql_test"]
+
+volumes:
+  db_data_test:
