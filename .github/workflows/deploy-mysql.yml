@@ -24,7 +24,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
-            cd ~/github_actions
+            cd ~/gitclones/github_actions
             git pull origin main
 
             echo "🐳 Rebuilding MySQL image and restarting service"
