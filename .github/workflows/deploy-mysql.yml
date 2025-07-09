@@ -17,11 +17,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           # SSH_PRIVATE_KEY has to be added to GitHub repo's secrets triggering the Action
-          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Pull code and restart MySQL with Docker compose
         run: |
-          ssh -o StrictHostKeyChecking=no ulricha@10.42.69.74 << 'EOF'
+          ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
             cd ~/github_actions
