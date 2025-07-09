@@ -21,7 +21,7 @@ jobs:
 
       - name: Pull code and restart MySQL with Docker compose
         run: |
-          ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
+          ssh -o StrictHostKeyChecking=no python@172.22.0.50:47532 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
             cd ~/github_actions
