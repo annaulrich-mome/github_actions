@@ -17,7 +17,7 @@ services:
       --binlog-format=ROW
       --binlog_row_image=FULL
     ports:
-      - "3306:3307"
+      - "3307:3307"
     volumes:
       - db_data_test:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
