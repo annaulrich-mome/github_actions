@@ -28,6 +28,6 @@ jobs:
             git pull origin main
 
             echo "🐳 Rebuilding MySQL image and restarting service"
-            sudo -S docker compose build
-            sudo -S docker compose --profile mysql_test up
+            sudo docker compose build
+            sudo docker compose --profile mysql_test up
           EOF
