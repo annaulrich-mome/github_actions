@@ -4,7 +4,11 @@
 - Stops and deletes old Docker image(s) if workflows pass
 
 ## Prerequisites
-### Create SSH keys on the VM
+### Add SSH keys
+#### SSH keys for GitHub Authentication
+github ssh: https://codewithsusan.com/notes/ssh-keys-and-github
+
+#### SSH keys for deployment
 ~~~
 ssh-keygen -t ed25519 -C "https://github.com/gituser/repo_name.git"
 ~~~
@@ -19,3 +23,4 @@ See: https://docs.github.com/en/actions/how-tos/hosting-your-own-runners/managin
 - .github/workflows/deploy-mysql.yml: contains the instructions for GitHub Actions
 - docker-compose.yml: contains the instructions for the Docker service(s), in this case only the mySQL image
 - init.sql: contains the SQL instructions for initializing the database. 
+
