@@ -19,15 +19,17 @@ jobs:
           # SSH_PRIVATE_KEY has to be added to GitHub repo's secrets triggering the Action
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Pull code and restart MySQL with Docker compose
+      - name: Pull code and test workflows in the staging environment
         run: |
-          ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
             cd ~/gitclones/github_actions
             git pull origin main
 
-            echo "🐳 Rebuilding MySQL image and restarting service"
-            sudo docker compose down mysql_test
+            echo "🐳 Building staging environment"
+            
             sudo docker compose --profile mysql_test up -d
+            echo "Stopping and removing containers in staging."
+            #sudo docker compose down mysql_test
           EOF
