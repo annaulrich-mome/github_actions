@@ -21,7 +21,7 @@ jobs:
 
       - name: Pull code and test workflows in the staging environment
         run: |
-          ssh -o StrictHostKeyChecking=no 172.22.0.50@python << 'EOF'
+          ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
             cd ~/gitclones/github_actions
