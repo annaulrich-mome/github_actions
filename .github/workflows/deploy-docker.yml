@@ -28,8 +28,8 @@ jobs:
             git pull origin main
 
             echo "🐳 Building staging environment"
-            
-            sudo docker compose --profile mysql_test up -d
+            sudo docker compose up -d
+            #sudo docker compose --profile mysql_test up -d
             echo "Stopping and removing containers in staging."
             #sudo docker compose down mysql_test
           EOF

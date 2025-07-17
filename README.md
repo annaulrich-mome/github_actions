@@ -1,35 +1,42 @@
 # Basic GitHub Actions template repository
-- Builds Docker image(s) automatically upon pushing to main branch
-- Tests some (or all) workflows in the new Docker container
-- Stops and deletes old Docker image(s) if workflows pass
+- Builds Docker images in STAGING environment automatically upon pushing to main branch
+- Tests some (or all) workflows in the new Docker containers
+- Stops and deletes old Docker containers if workflows pass
 
 ## Prerequisites
 
-### Add SSH keys
+### Add secrets and other variables to the GitHub repo
 
-#### SSH keys for GitHub Authentication
+#### Add SSH keys
+##### SSH keys for GitHub Authentication
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 Helpful video: https://www.youtube.com/watch?v=aHcflUMfCp8
-#### SSH keys for deployment
+##### SSH keys for deployment
 ~~~
+# Add this line at the end (replace youruser with the actual username):
 ssh-keygen -t ed25519 -C "https://github.com/gituser/repo_name.git"
 ~~~
 Add public key as a 'Deploy Key' to GitHub repo triggering the action and private key as a secret to GitHub repo triggering the action.
 See: https://github.com/webfactory/ssh-agent?tab=readme-ov-file#usage
+#### Add other variables
+- VM_HOST: IP address of VM
+- VM_USER: username on the VM
+
 
 ### Set up runner server
-Since the IP of the VM is private, we need to set up a self-hosted runner for GitHub Actions.
-Follow the steps in: https://docs.github.com/en/actions/how-tos/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners
+Since the IP of the VM is private, we need to set up a self-hosted runner.
+Follow instructions: https://docs.github.com/en/actions/how-tos/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners
 #### Configure the runner application as a service
-This is needed to automatically start the runner application when the machine starts.
+This is needed to keep the runner application running on the VM.
+Follow instructions: https://docs.github.com/en/actions/how-tos/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service
 
 ## Basic file structure
-- .github/workflows/deploy-mysql.yml: contains the instructions for GitHub Actions
-- docker-compose.yml: contains the instructions for the Docker service(s), in this case only the mySQL image
-- init.sql: contains the SQL instructions for initializing the database. 
+- .github/workflows/deploy-docker.yml: contains the instructions for GitHub Actions
+- docker-compose.stage.yml: contains the instructions for the Docker service(s)
+- init.sql: contains SQL instructions for initializing the database for the mysql service 
 
 ## Notes for debugging
-- If sudo has to be used to run commands on the VM, the following like must be added in the VM's sudoers file to allow execution without entering the password:
+- If sudo has to be used to run commands on the VM, the following must be added to the VM's sudoers file to allow execution without entering the password:
     ~~~
     sudo visudo
     ~~~

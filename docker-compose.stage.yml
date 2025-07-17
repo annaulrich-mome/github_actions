@@ -1,0 +1,108 @@
+name: data-science-container-stage
+
+services:
+
+  ### MySQL database with CDC enabled
+  mysql:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - .env.production
+    command: >
+      --server-id=1
+      --log-bin=mysql-bin
+      --binlog-format=ROW
+      --binlog_row_image=FULL
+    ports:
+      - 3306
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    profiles: [ "mysql" ,"server"]
+
+
+  ### Prefect Database
+  database:
+    image: postgres:15.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=prefect
+    expose:
+      - 5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    profiles: ["server"]
+
+
+  ### Prefect Server API and UI
+  server:
+    image: prefecthq/prefect:2.11.5-python3.11
+    restart: always
+    volumes:
+      - prefect:/root/.prefect
+    entrypoint: ["/opt/prefect/entrypoint.sh", "prefect", "server", "start"]
+    env_file:
+      - .env.production
+    environment:
+      - DEPLOYMENT_IP=${DEPLOYMENT_IP}
+      - PREFECT_UI_URL=http://${DEPLOYMENT_IP}/api
+      - PREFECT_API_URL=http://${DEPLOYMENT_IP}/api
+      # If you want to access Prefect Server UI from anywhere other than the Docker host machine, you will need to change
+      # PREFECT_UI_URL and PREFECT_API_URL to match the external hostname/IP of the host machine. For example:
+      #- PREFECT_UI_URL=http://external-ip:4200/api
+      #- PREFECT_API_URL=http://external-ip:4200/api
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://postgres:postgres@database:5432/prefect
+    expose:
+      - "4200"  # Only expose to the internal Docker network
+      - "80"
+    depends_on:
+      - database
+      - mysql
+    profiles: ["server"]
+
+  ### Prefect Agent for Production
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.prefect
+    restart: always
+    entrypoint: ["prefect", "agent", "start", "-q", "default"]
+    env_file:
+      - .env.production
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+      - PYTHONPATH=/app
+      - PREFECT_AGENT_WORKDIR=/app/flows
+    volumes:
+      - .:/app
+    profiles: ["agent"]
+
+
+  ### Prefect CLI for administrative tasks
+  cli:
+    build:
+      context: .
+      dockerfile: Dockerfile.prefect
+    entrypoint: [ "bash" ]
+    working_dir: "/app"
+    env_file:
+      - .env.production
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    profiles: [ "cli" ]
+
+
+volumes:
+  db_data:
+  prefect:
+  db:
+networks:
+  default:
+    name: prefect-network-stage
+    external: true
