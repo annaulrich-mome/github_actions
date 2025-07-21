@@ -19,6 +19,7 @@ ssh-keygen -t ed25519 -C "https://github.com/gituser/repo_name.git"
 Add public key as a 'Deploy Key' to GitHub repo triggering the action and private key as a secret to GitHub repo triggering the action.
 See: https://github.com/webfactory/ssh-agent?tab=readme-ov-file#usage
 #### Add other variables
+On GitHub, go to the repo's "Settings" > "Secrets and variables" > "Actions" > "New repository secret" and add:
 - VM_HOST: IP address of VM
 - VM_USER: username on the VM
 
