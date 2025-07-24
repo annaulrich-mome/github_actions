@@ -9,12 +9,38 @@
 
 #### Add SSH keys
 ##### SSH keys for GitHub Authentication
+Open VM Terminal
+Generate key-pair:
+~~~
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# Add key to SSH agent
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+~~~
+Add the public key to the GitHub user's profile:
+~~~
+cat ~/.ssh/id_ed25519.pub
+~~~
+On GitHub, go to your user's "Settings" > "SSH and GPG keys" > "New SSH key" > "Add SSH key"
+
+Test your VM's connection to GitHub:
+~~~
+ssh -T git@github.com
+~~~
+What you should see:
+~~~
+Hi <git_user>! You've successfully authenticated, but GitHub does not provide shell access.
+~~~
+
+Helpful resources:
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh
-Helpful video: https://www.youtube.com/watch?v=aHcflUMfCp8
-##### SSH keys for deployment
+https://www.youtube.com/watch?v=aHcflUMfCp8
+
+##### SSH keys for the GitHub runner - VM connection
+Name the key differently (-f) from the GitHub Authentication key
 ~~~
 # Add this line at the end (replace youruser with the actual username):
-ssh-keygen -t ed25519 -C "https://github.com/gituser/repo_name.git"
+ssh-keygen -f ~/.ssh/github_runner_key -t ed25519
 ~~~
 Add public key as a 'Deploy Key' to GitHub repo triggering the action and private key as a secret to GitHub repo triggering the action.
 See: https://github.com/webfactory/ssh-agent?tab=readme-ov-file#usage
