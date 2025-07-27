@@ -28,7 +28,7 @@ jobs:
 
       - name: Pull code and build the staging environment
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no python@localhost << 'EOF'
+          ssh -i ~/.ssh/github_runner_key -o StrictHostKeyChecking=no python@localhost << 'EOF'
           #ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
