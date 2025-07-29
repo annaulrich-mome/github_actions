@@ -104,5 +104,4 @@ volumes:
   db:
 networks:
   default:
-    #name: prefect-network-stage
-    external: true
+    name: prefect-network-stage
