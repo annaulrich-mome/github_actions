@@ -15,29 +15,17 @@ jobs:
         with:
           ssh-key: '/home/python/.ssh/github_runner_key'
 
-#      - name: Setup key in runner
-#        run: |
-#          mkdir -p ~/.ssh
-#          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-#          chmod 600 ~/.ssh/id_ed25519
-#          ssh-keyscan -H localhost >> ~/.ssh/known_hosts
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          # SSH_PRIVATE_KEY has to be added to GitHub repo's secrets triggering the Action
-#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Pull code and build the staging environment
         run: |
+          # localhost, since runner is hosted on the same VM
           ssh -i ~/.ssh/github_runner_key -o StrictHostKeyChecking=no python@localhost << 'EOF'
-          #ssh -o StrictHostKeyChecking=no python@172.22.0.50 << 'EOF'
             echo "🔁 Pulling latest code"
             # cd into the directory where repo is cloned on the VM
             cd ~/gitclones/github_actions
             git pull origin main
 
             echo "🐳 Building staging environment"
-            sudo docker compose -f docker-compose.stage.yml up -d
-            #sudo docker compose --profile mysql_test up -d
+            sudo docker compose up -f docker-compose.stage.yml --build -d
             echo "Stopping and removing containers in staging."
             #sudo docker compose down mysql_test
           EOF
