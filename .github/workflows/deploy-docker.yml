@@ -25,7 +25,7 @@ jobs:
             git pull origin main
 
             echo "🐳 Building staging environment"
-            sudo docker compose up -f docker-compose.stage.yml --build -d
+            sudo docker compose -f docker-compose.stage.yml up --build -d
             echo "Stopping and removing containers in staging."
             #sudo docker compose down mysql_test
           EOF
